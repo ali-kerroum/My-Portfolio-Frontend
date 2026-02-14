@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 
-const SERVICE_ID = 'service_85wg25q';
-const TEMPLATE_ID = 'template_nykiyqm';
-const PUBLIC_KEY = 'wn03hVqAafszi-wxe';
+const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_85wg25q';
+const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_nykiyqm';
+const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'wn03hVqAafszi-wxe';
 
 const initialFormState = {
   name: '',
