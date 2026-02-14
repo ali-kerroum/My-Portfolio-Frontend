@@ -1,9 +1,22 @@
 import { useMemo, useState, useEffect } from 'react';
-import projects from '../data/projectsData';
+import localProjects from '../data/projectsData';
+import { getProjects } from '../services/api';
 
 export default function Projects() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedProject, setSelectedProject] = useState(null);
+  const [projects, setProjects] = useState(localProjects);
+
+  // Try fetching from API, fallback to local data
+  useEffect(() => {
+    getProjects()
+      .then((res) => {
+        if (res.data && res.data.length > 0) setProjects(res.data);
+      })
+      .catch(() => {
+        // keep local data
+      });
+  }, []);
 
   const categories = useMemo(() => {
     const unique = Array.from(new Set(projects.map((project) => project.category)));
@@ -190,6 +203,21 @@ export default function Projects() {
                 </ul>
               </div>
             )}
+
+            {selectedProject.sections?.length > 0 && selectedProject.sections.map((section, idx) => (
+              <div key={idx} className="project-modal__section">
+                <h4 className="project-modal__section-title">{section.name}</h4>
+                {section.type === 'list' && Array.isArray(section.content) ? (
+                  <ul className="project-modal__list">
+                    {section.content.map((item, i) => (
+                      <li key={i}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="project-modal__section-text">{section.content}</p>
+                )}
+              </div>
+            ))}
 
             {selectedProject.videos?.length > 0 && (
               <div className="project-modal__media">

@@ -1,4 +1,7 @@
-const services = [
+import { useState, useEffect } from 'react';
+import { getServices } from '../services/api';
+
+const localServices = [
   {
     number: '01',
     title: 'Data Analysis & Visualization',
@@ -41,6 +44,17 @@ const services = [
 ];
 
 export default function Services() {
+  const [services, setServices] = useState(localServices);
+
+  useEffect(() => {
+    getServices()
+      .then((res) => {
+        if (res.data && res.data.length > 0) setServices(res.data);
+      })
+      .catch(() => {
+        // keep local data
+      });
+  }, []);
   return (
     <section id="services" className="section services-section">
       <div className="container">
@@ -57,7 +71,7 @@ export default function Services() {
             <article key={service.title} className="service-item">
               <div className="service-item__header">
                 <div className="service-item__number">{service.number}</div>
-                <div className="service-item__icon">{service.icon}</div>
+                <div className="service-item__icon">{service.icon && service.icon.startsWith('<svg') ? <span dangerouslySetInnerHTML={{ __html: service.icon }} /> : service.icon}</div>
               </div>
               
               <div className="service-item__content">

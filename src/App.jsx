@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -8,6 +9,18 @@ import Projects from './components/Projects';
 import Contact from './components/Contact';
 import Gallery from './components/Gallery';
 import Footer from './components/Footer';
+import AdminLogin from './components/admin/AdminLogin';
+import AdminLayout from './components/admin/AdminLayout';
+import AdminDashboard from './components/admin/AdminDashboard';
+import ManageProjects from './components/admin/ManageProjects';
+import ManageExperiences from './components/admin/ManageExperiences';
+import ManageServices from './components/admin/ManageServices';
+import ManageSkills from './components/admin/ManageSkills';
+import ManageContactLinks from './components/admin/ManageContactLinks';
+import ManageMessages from './components/admin/ManageMessages';
+import ManageSections from './components/admin/ManageSections';
+import ManageHero from './components/admin/ManageHero';
+import { trackPageView, getVisibleSections } from './services/api';
 import './App.css';
 
 const getGalleryProjectId = () => {
@@ -20,13 +33,29 @@ const getGalleryProjectId = () => {
   return Number.isNaN(id) ? null : id;
 };
 
-function App() {
+function Portfolio() {
   const [galleryProjectId, setGalleryProjectId] = useState(getGalleryProjectId);
+  const [visibleSections, setVisibleSections] = useState(null);
 
   useEffect(() => {
     const onHashChange = () => setGalleryProjectId(getGalleryProjectId());
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
+  // Track page view
+  useEffect(() => {
+    trackPageView(window.location.pathname).catch(() => {});
+  }, []);
+
+  // Fetch visible sections
+  useEffect(() => {
+    getVisibleSections()
+      .then((res) => setVisibleSections(res.data))
+      .catch(() => {
+        // fallback: show all
+        setVisibleSections(['hero', 'about', 'experience', 'services', 'projects', 'contact']);
+      });
   }, []);
 
   useEffect(() => {
@@ -67,17 +96,40 @@ function App() {
           <Gallery projectId={galleryProjectId} />
         ) : (
           <>
-            <Hero />
-            <About />
-            <Experience />
-            <Services />
-            <Projects />
-            <Contact />
+            {visibleSections?.includes('hero') && <Hero />}
+            {visibleSections?.includes('about') && <About />}
+            {visibleSections?.includes('experience') && <Experience />}
+            {visibleSections?.includes('services') && <Services />}
+            {visibleSections?.includes('projects') && <Projects />}
+            {visibleSections?.includes('contact') && <Contact />}
           </>
         )}
       </main>
       <Footer />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <Routes>
+      {/* Admin routes */}
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<AdminDashboard />} />
+        <Route path="projects" element={<ManageProjects />} />
+        <Route path="experiences" element={<ManageExperiences />} />
+        <Route path="services" element={<ManageServices />} />
+        <Route path="skills" element={<ManageSkills />} />
+        <Route path="contact-links" element={<ManageContactLinks />} />
+        <Route path="messages" element={<ManageMessages />} />
+        <Route path="sections" element={<ManageSections />} />
+        <Route path="hero" element={<ManageHero />} />
+      </Route>
+
+      {/* Portfolio (public) */}
+      <Route path="*" element={<Portfolio />} />
+    </Routes>
   );
 }
 

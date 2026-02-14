@@ -1,4 +1,7 @@
-const skills = [
+import { useState, useEffect } from 'react';
+import { getSkills } from '../services/api';
+
+const localSkills = [
   {
     category: 'Data Analysis & Statistics',
     icon: '📊',
@@ -145,6 +148,18 @@ const profileFacts = [
 ];
 
 export default function About() {
+  const [skills, setSkills] = useState(localSkills);
+
+  useEffect(() => {
+    getSkills()
+      .then((res) => {
+        if (res.data && res.data.length > 0) setSkills(res.data);
+      })
+      .catch(() => {
+        // keep local data
+      });
+  }, []);
+
   return (
     <section id="about" className="section">
       <div className="container">
@@ -219,7 +234,7 @@ export default function About() {
                   style={{ '--card-accent': group.accent, '--card-index': index }}
                 >
                   <div className="skill-card__header">
-                    <span className="skill-card__icon">{group.icon}</span>
+                    <span className="skill-card__icon">{group.icon && group.icon.startsWith('<svg') ? <span dangerouslySetInnerHTML={{ __html: group.icon }} /> : group.icon}</span>
                     <div className="skill-card__title-wrap">
                       <h5 className="skill-card__title">{group.category}</h5>
                       <span className="skill-card__count">{group.items.length} skills</span>

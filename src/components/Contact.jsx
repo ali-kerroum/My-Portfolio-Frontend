@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
+import { submitContactMessage } from '../services/api';
 
-const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_85wg25q';
-const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_nykiyqm';
-const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'wn03hVqAafszi-wxe';
+const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || '';
+const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || '';
+const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || '';
 
 const initialFormState = {
   name: '',
@@ -68,6 +69,13 @@ export default function Contact() {
       setIsSubmitting(false);
       return;
     }
+
+    // Always save to backend (independent of EmailJS)
+    submitContactMessage({
+      name: formData.name,
+      email: formData.email,
+      message: formData.message,
+    }).catch((err) => console.error('Backend save failed:', err));
 
     try {
       const result = await emailjs.send(
