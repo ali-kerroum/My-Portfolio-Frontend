@@ -150,18 +150,46 @@ export default function Projects() {
       {selectedProject && (
         <div className="project-modal" onClick={() => setSelectedProject(null)}>
           <div className="project-modal__container" onClick={(event) => event.stopPropagation()}>
-            <button type="button" className="project-modal__close" onClick={() => setSelectedProject(null)}>
+            
+
+            <div className="project-modal__header">
+              <button type="button" className="project-modal__close" onClick={() => setSelectedProject(null)}>
               <svg viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"/>
               </svg>
             </button>
-
-            <div className="project-modal__header">
-              <h3 className="project-modal__title">{selectedProject.title}</h3>
-              <span className="project-modal__category">{selectedProject.category.toUpperCase()}</span>
             </div>
 
             <p className="project-modal__description">{selectedProject.description}</p>
+
+            {selectedProject.problem && (
+              <div className="project-modal__section">
+                <h4 className="project-modal__section-title">Problem</h4>
+                <p className="project-modal__section-text">{selectedProject.problem}</p>
+              </div>
+            )}
+
+            {selectedProject.solution?.length > 0 && (
+              <div className="project-modal__section">
+                <h4 className="project-modal__section-title">Solution</h4>
+                <ul className="project-modal__list">
+                  {selectedProject.solution.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {selectedProject.benefits?.length > 0 && (
+              <div className="project-modal__section">
+                <h4 className="project-modal__section-title">Key Benefits</h4>
+                <ul className="project-modal__list">
+                  {selectedProject.benefits.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {selectedProject.videos?.length > 0 && (
               <div className="project-modal__media">

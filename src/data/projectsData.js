@@ -3,7 +3,7 @@ const projects = [
     id: 1,
     title: 'Nextride — One-Way Car Rental Platform',
     description:
-      'Developed a one-way intercity car-rental platform that allows customers to pick up and return vehicles across partner agencies in different cities.',
+      'Nextride solves a common problem for travelers in Morocco: being forced to keep a rental car for an entire stay when they only need it for a one-way intercity trip. The platform enables flexible one-way rentals — pick up in one city and return at a partner agency in another — with a flat 50 MAD drop-off fee. Built on a national network of vetted partner agencies, it offers a simple online booking flow where users select departure and return locations, pay only for what they use, and enjoy a modern, reliable rental experience.',
     technologies: ['Laravel', 'MySQL', 'Blade', 'Tailwind CSS'],
     image: '/images/projects/next_ride/NEXT_RIDE.png',
     category: 'web',
@@ -12,6 +12,18 @@ const projects = [
     videos: ['/videos/projects/nextride/user_interface.mp4', '/videos/projects/nextride/dashboard.mp4'],
     stats: {},
     skills: ['Product design', 'Backend architecture', 'Database modeling'],
+    problem: 'Travelers in Morocco who rent a car for an intercity trip (e.g. Marrakech → Tanger) must keep it for their entire stay — even if they only need it for the initial journey. This creates unnecessary costs and limits flexibility, as traditional rental services rarely offer one-way or cross-city returns.',
+    solution: [
+      'One-way intercity rentals with cross-agency returns — rent in one city, return in another.',
+      'Fixed transparent drop-off fee of just 50 MAD for returning at a different agency.',
+      'National network of vetted partner agencies across major Moroccan cities.',
+      'Simple, intuitive online booking with clear departure and return location selection.',
+    ],
+    benefits: [
+      'Pay only for what you actually use.',
+      'Full freedom to travel between cities without constraints.',
+      'Reliable, modern experience backed by a partner agency network and efficient logistics.',
+    ],
   },
   {
     id: 2,
