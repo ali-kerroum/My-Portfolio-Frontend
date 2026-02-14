@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import emailjs from '@emailjs/browser';
 
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
@@ -47,6 +47,12 @@ export default function Contact() {
   const [status, setStatus] = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  useEffect(() => {
+    if (PUBLIC_KEY) {
+      emailjs.init({ publicKey: PUBLIC_KEY });
+    }
+  }, []);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((previous) => ({ ...previous, [name]: value }));
@@ -57,23 +63,34 @@ export default function Contact() {
     setStatus({ type: '', message: '' });
     setIsSubmitting(true);
 
+    if (!SERVICE_ID || !TEMPLATE_ID || !PUBLIC_KEY) {
+      setStatus({ type: 'error', message: 'Email service is not configured. Please try again later.' });
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
-      await emailjs.send(
+      const result = await emailjs.send(
         SERVICE_ID,
         TEMPLATE_ID,
         {
-          name: formData.name,
-          email: formData.email,
+          from_name: formData.name,
+          from_email: formData.email,
+          reply_to: formData.email,
+          to_name: 'Ali',
           subject: 'Portfolio contact message',
           message: formData.message,
         },
-        PUBLIC_KEY
+        { publicKey: PUBLIC_KEY }
       );
+      console.log('EmailJS success:', result);
 
       setFormData(initialFormState);
       setStatus({ type: 'success', message: 'Your message was sent successfully.' });
-    } catch {
-      setStatus({ type: 'error', message: 'Unable to send the message. Please try again.' });
+    } catch (error) {
+      console.error('EmailJS error:', error);
+      const errorMsg = error?.text || error?.message || 'Unknown error';
+      setStatus({ type: 'error', message: `Unable to send the message: ${errorMsg}` });
     } finally {
       setIsSubmitting(false);
     }
