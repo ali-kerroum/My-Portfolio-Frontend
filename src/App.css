@@ -3723,12 +3723,14 @@ svg {
   .projects-filter {
     flex-wrap: wrap;
     justify-content: center;
+    width: 100%;
   }
 
   .projects-filter__btn {
     flex: 1 1 auto;
-    min-width: 120px;
+    min-width: 0;
     text-align: center;
+    justify-content: center;
   }
 
   .project-item {
@@ -4127,11 +4129,25 @@ svg {
   }
 
   /* Projects */
+  .projects-filter {
+    gap: 0.4rem;
+    width: 100%;
+  }
+
   .projects-filter__btn {
-    padding: 0.55rem 0.85rem;
-    font-size: 0.8rem;
-    min-width: auto;
-    flex: 1 1 auto;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.75rem;
+    min-width: 0;
+    flex: 1 1 0;
+    justify-content: center;
+    gap: 0.35rem;
+  }
+
+  .projects-filter__count {
+    min-width: 20px;
+    height: 20px;
+    font-size: 0.68rem;
+    padding: 0 0.3rem;
   }
 
   .project-item__visual {
@@ -4546,13 +4562,24 @@ svg {
 
   /* Projects */
   .projects-filter {
-    gap: 0.35rem;
+    gap: 0.3rem;
+    width: 100%;
   }
 
   .projects-filter__btn {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.72rem;
-    min-height: 38px;
+    padding: 0.45rem 0.5rem;
+    font-size: 0.68rem;
+    min-height: 36px;
+    flex: 1 1 0;
+    justify-content: center;
+    gap: 0.25rem;
+  }
+
+  .projects-filter__count {
+    min-width: 18px;
+    height: 18px;
+    font-size: 0.62rem;
+    padding: 0 0.25rem;
   }
 
   .project-item__visual {
