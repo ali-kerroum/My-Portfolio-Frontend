@@ -148,12 +148,14 @@ export default function Contact() {
               <div className="contact-detail-item">
                 <div className="contact-detail-item__icon">
                   <svg viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd"/>
+                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
                   </svg>
                 </div>
                 <div className="contact-detail-item__content">
-                  <h3 className="contact-detail-item__title">Response Time</h3>
-                  <p className="contact-detail-item__text">Usually within 24 hours</p>
+                  <h3 className="contact-detail-item__title">Phone</h3>
+                  <a href="tel:+212648910902" className="contact-detail-item__link">
+                    +212 6 48 91 09 02
+                  </a>
                 </div>
               </div>
             </div>
