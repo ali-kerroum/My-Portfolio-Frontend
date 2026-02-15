@@ -50,12 +50,67 @@ export const uploadProjectImage = (formData) =>
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 
-export const uploadFile = (file) => {
+// Get Cloudinary signature from backend
+const getCloudinarySignature = (folder) =>
+  api.get('/cloudinary-signature', { params: { folder } });
+
+// Server-side upload fallback (for local dev or when Cloudinary direct fails)
+const serverUpload = (file) => {
   const fd = new FormData();
   fd.append('file', file);
   return api.post('/upload-file', fd, {
     headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 600000, // 10 min timeout for large files
   });
+};
+
+// Upload file: tries direct Cloudinary upload first, falls back to server-side
+export const uploadFile = async (file) => {
+  const isVideo = file.type.startsWith('video/');
+  const folder = isVideo ? 'projects/videos' : 'projects/images';
+
+  try {
+    // 1. Get signature from our backend
+    const { data: sig } = await getCloudinarySignature(folder);
+
+    // If cloud_name looks like a placeholder, skip direct upload
+    if (!sig.cloud_name || sig.cloud_name === 'CLOUD_NAME') {
+      throw new Error('Cloudinary not properly configured');
+    }
+
+    // 2. Upload directly to Cloudinary
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('api_key', sig.api_key);
+    fd.append('timestamp', sig.timestamp);
+    fd.append('signature', sig.signature);
+    fd.append('folder', sig.folder);
+
+    const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${sig.cloud_name}/auto/upload`;
+
+    const response = await fetch(cloudinaryUrl, {
+      method: 'POST',
+      body: fd,
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error?.message || 'Cloudinary upload failed');
+    }
+
+    const result = await response.json();
+
+    return {
+      data: {
+        url: result.secure_url,
+        type: isVideo ? 'video' : 'image',
+        name: file.name,
+      },
+    };
+  } catch {
+    // Fallback: upload through the server (works for local dev)
+    return serverUpload(file);
+  }
 };
 
 // Experiences
