@@ -7,6 +7,8 @@ export default function Projects() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [projects, setProjects] = useState(localProjects);
   const [layout, setLayout] = useState('list');
+  const [currentPage, setCurrentPage] = useState(1);
+  const PROJECTS_PER_PAGE = 5;
 
   // Try fetching from API, fallback to local data
   useEffect(() => {
@@ -28,6 +30,17 @@ export default function Projects() {
     activeCategory === 'all'
       ? projects
       : projects.filter((project) => project.category === activeCategory);
+
+  const totalPages = Math.ceil(filteredProjects.length / PROJECTS_PER_PAGE);
+  const paginatedProjects = filteredProjects.slice(
+    (currentPage - 1) * PROJECTS_PER_PAGE,
+    currentPage * PROJECTS_PER_PAGE
+  );
+
+  const handleCategoryChange = (category) => {
+    setActiveCategory(category);
+    setCurrentPage(1);
+  };
 
   const categoryLabels = {
     all: 'All Projects',
@@ -91,7 +104,7 @@ export default function Projects() {
                 key={category}
                 type="button"
                 className={`projects-filter__btn ${activeCategory === category ? 'projects-filter__btn--active' : ''}`}
-                onClick={() => setActiveCategory(category)}
+                onClick={() => handleCategoryChange(category)}
               >
                 <span className="projects-filter__label">{categoryLabels[category] || category.toUpperCase()}</span>
                 <span className="projects-filter__count">
@@ -128,7 +141,7 @@ export default function Projects() {
         </div>
 
         <div className={`projects-showcase ${layout === 'grid' ? 'projects-showcase--grid' : ''}`}>
-          {filteredProjects.map((project, index) => (
+          {paginatedProjects.map((project, index) => (
             <article key={project.id} className="project-item">
               <div className="project-item__visual">
                 <div className="project-item__image-wrapper">
@@ -153,7 +166,7 @@ export default function Projects() {
                 <div className="project-item__header">
                   <h3 className="project-item__title">{project.title}</h3>
                   <div className="project-item__index">
-                    {String(index + 1).padStart(2, '0')}
+                    {String((currentPage - 1) * PROJECTS_PER_PAGE + index + 1).padStart(2, '0')}
                   </div>
                 </div>
 
@@ -199,6 +212,41 @@ export default function Projects() {
             </article>
           ))}
         </div>
+
+        {totalPages > 1 && (
+          <div className="projects-pagination">
+            <button
+              type="button"
+              className="projects-pagination__btn"
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+            >
+              <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+                <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd"/>
+              </svg>
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                type="button"
+                className={`projects-pagination__btn projects-pagination__num ${currentPage === page ? 'projects-pagination__num--active' : ''}`}
+                onClick={() => setCurrentPage(page)}
+              >
+                {page}
+              </button>
+            ))}
+            <button
+              type="button"
+              className="projects-pagination__btn"
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+            >
+              <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+                <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"/>
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
 
       {selectedProject && (

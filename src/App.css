@@ -1650,6 +1650,45 @@ svg {
   font-size: 1.4rem;
 }
 
+/* ====== Projects Pagination ====== */
+.projects-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 2.5rem;
+}
+.projects-pagination__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 0.5rem;
+  border: 1px solid rgba(94, 160, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(15, 25, 42, 0.4);
+  color: var(--text-secondary, #94a3b8);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.projects-pagination__btn:hover:not(:disabled) {
+  border-color: rgba(94, 160, 255, 0.35);
+  color: var(--text-primary, #e2e8f0);
+  background: rgba(94, 160, 255, 0.08);
+}
+.projects-pagination__btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.projects-pagination__num--active {
+  background: rgba(94, 160, 255, 0.15);
+  border-color: rgba(94, 160, 255, 0.4);
+  color: var(--accent, #5ea0ff);
+  font-weight: 600;
+}
+
 .project-item {
   display: grid;
   grid-template-columns: 1fr 1.1fr;
@@ -5233,6 +5272,21 @@ body:has(.app-shell.theme-light) {
 .theme-light .projects-layout-btn--active {
   background: var(--primary);
   color: #fff;
+}
+.theme-light .projects-pagination__btn {
+  background: rgba(237, 232, 225, 0.7);
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+.theme-light .projects-pagination__btn:hover:not(:disabled) {
+  background: rgba(59, 125, 216, 0.1);
+  border-color: var(--primary);
+  color: var(--text);
+}
+.theme-light .projects-pagination__num--active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
 }
 
 /* ── Project Modal ── */
