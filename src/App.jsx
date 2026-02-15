@@ -35,7 +35,8 @@ const getGalleryProjectId = () => {
 
 function Portfolio() {
   const [galleryProjectId, setGalleryProjectId] = useState(getGalleryProjectId);
-  const [visibleSections, setVisibleSections] = useState(null);
+  const defaultSections = ['hero', 'about', 'experience', 'services', 'projects', 'contact'];
+  const [visibleSections, setVisibleSections] = useState(defaultSections);
 
   useEffect(() => {
     const onHashChange = () => setGalleryProjectId(getGalleryProjectId());
@@ -43,14 +44,14 @@ function Portfolio() {
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
 
-  // Track page view on load
+  // Track page view on load and ensure scroll starts at top
   useEffect(() => {
+    window.scrollTo(0, 0);
     trackPageView(window.location.pathname).catch(() => {});
   }, []);
 
   // Track section views as user scrolls
   useEffect(() => {
-    if (!visibleSections) return;
     const tracked = new Set();
     const sectionObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -71,14 +72,11 @@ function Portfolio() {
     return () => sectionObserver.disconnect();
   }, [visibleSections]);
 
-  // Fetch visible sections
+  // Fetch visible sections (update from backend if available)
   useEffect(() => {
     getVisibleSections()
       .then((res) => setVisibleSections(res.data))
-      .catch(() => {
-        // fallback: show all
-        setVisibleSections(['hero', 'about', 'experience', 'services', 'projects', 'contact']);
-      });
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
