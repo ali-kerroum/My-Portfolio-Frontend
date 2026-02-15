@@ -53,9 +53,9 @@ export default function AdminDashboard() {
   const [visitors, setVisitors] = useState({
     total: 0, today: 0, yesterday: 0, this_week: 0, this_month: 0,
     unique_visitors: 0, growth_percent: 0, daily: [], monthly: [],
-    top_pages: [], day_of_week: [], browsers: [],
+    top_pages: [], browsers: [],
     devices: { mobile: 0, desktop: 0 }, peak_hours: [], recent_views: [],
-    new_visitors_today: 0, returning_visitors_today: 0,
+    session_insights: { avg_duration: 0, avg_pages: 0, bounce_rate: 0, total_sessions: 0, longest_session: 0 },
   });
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [recentMessages, setRecentMessages] = useState([]);
@@ -190,7 +190,7 @@ export default function AdminDashboard() {
       {/* ── Bento: Browsers + Devices + Hours ────── */}
       <section className="dash2-trio">
         <div className="dash2-glass">
-          <div className="dash2-glass__head"><h3>Browsers</h3></div>
+          <div className="dash2-glass__head"><h3>Browsers <span className="dash2-alltime">All Time</span></h3></div>
           <div className="dash2-browser-list">
             {(visitors.browsers || []).length === 0 && <p className="dash2-empty">No data yet</p>}
             {(visitors.browsers || []).map((b) => {
@@ -213,7 +213,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="dash2-glass dash2-glass--center">
-          <div className="dash2-glass__head"><h3>Devices</h3></div>
+          <div className="dash2-glass__head"><h3>Devices <span className="dash2-alltime">All Time</span></h3></div>
           <div className="dash2-devices">
             <DonutRing segments={deviceSegments} size={96} />
             <div className="dash2-devices__legend">
@@ -229,7 +229,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="dash2-glass">
-          <div className="dash2-glass__head"><h3>Peak Hours</h3></div>
+          <div className="dash2-glass__head"><h3>Peak Hours <span className="dash2-alltime">All Time</span></h3></div>
           <div className="dash2-heatmap">
             {(visitors.peak_hours || []).map((h) => (
               <div key={h.hour} className="dash2-heatmap__cell"
@@ -258,32 +258,49 @@ export default function AdminDashboard() {
       {/* ── Bento: Referrers + Activity Feed ────── */}
       <section className="dash2-bento">
         <div className="dash2-glass">
-          <div className="dash2-glass__head"><h3>Visits by Day</h3></div>
-          <div className="dash2-dow">
-            {(() => {
-              const dowData = visitors.day_of_week || [];
-              const maxDow = Math.max(...dowData.map(d => d.count), 1);
-              return dowData.map((d) => (
-                <div key={d.day} className="dash2-dow__col" title={`${d.day}: ${d.count} visits`}>
-                  <span className="dash2-dow__tip">{d.count}</span>
-                  <div className="dash2-dow__bar" style={{ '--h': `${Math.max((d.count / maxDow) * 100, 4)}%` }} />
-                  <span className="dash2-dow__lbl">{d.day}</span>
+          <div className="dash2-glass__head"><h3>Session Insights</h3></div>
+          {(() => {
+            const si = visitors.session_insights || {};
+            const fmtDuration = (s) => {
+              if (!s || s === 0) return '0s';
+              const m = Math.floor(s / 60);
+              const sec = s % 60;
+              if (m === 0) return `${sec}s`;
+              return sec > 0 ? `${m}m ${sec}s` : `${m}m`;
+            };
+            return (
+              <div className="dash2-sessions">
+                <div className="dash2-sessions__card">
+                  <span className="dash2-sessions__icon" style={{ color: '#639bff' }}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  </span>
+                  <span className="dash2-sessions__val">{fmtDuration(si.avg_duration)}</span>
+                  <span className="dash2-sessions__lbl">Avg Duration</span>
                 </div>
-              ));
-            })()}
-          </div>
-          {visitors.new_visitors_today + visitors.returning_visitors_today > 0 && (
-            <div className="dash2-newret">
-              <div className="dash2-newret__item">
-                <span className="dash2-newret__dot" style={{ background: '#4caf50' }} />
-                <span>New today: <strong>{visitors.new_visitors_today}</strong></span>
+                <div className="dash2-sessions__card">
+                  <span className="dash2-sessions__icon" style={{ color: '#4caf50' }}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  </span>
+                  <span className="dash2-sessions__val">{si.avg_pages || 0}</span>
+                  <span className="dash2-sessions__lbl">Pages / Session</span>
+                </div>
+                <div className="dash2-sessions__card">
+                  <span className="dash2-sessions__icon" style={{ color: '#ff6384' }}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  </span>
+                  <span className="dash2-sessions__val">{si.bounce_rate || 0}%</span>
+                  <span className="dash2-sessions__lbl">Bounce Rate</span>
+                </div>
+                <div className="dash2-sessions__card">
+                  <span className="dash2-sessions__icon" style={{ color: '#bc8cff' }}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                  </span>
+                  <span className="dash2-sessions__val">{si.total_sessions || 0}</span>
+                  <span className="dash2-sessions__lbl">Total Sessions</span>
+                </div>
               </div>
-              <div className="dash2-newret__item">
-                <span className="dash2-newret__dot" style={{ background: '#639bff' }} />
-                <span>Returning: <strong>{visitors.returning_visitors_today}</strong></span>
-              </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
 
         <div className="dash2-glass dash2-glass--chart">
