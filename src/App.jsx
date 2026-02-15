@@ -43,10 +43,33 @@ function Portfolio() {
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
 
-  // Track page view
+  // Track page view on load
   useEffect(() => {
     trackPageView(window.location.pathname).catch(() => {});
   }, []);
+
+  // Track section views as user scrolls
+  useEffect(() => {
+    if (!visibleSections) return;
+    const tracked = new Set();
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const sectionId = entry.target.id;
+          if (sectionId && !tracked.has(sectionId)) {
+            tracked.add(sectionId);
+            trackPageView(`/#${sectionId}`).catch(() => {});
+          }
+        }
+      });
+    }, { threshold: 0.3 });
+
+    document.querySelectorAll('section[id]').forEach((el) => {
+      sectionObserver.observe(el);
+    });
+
+    return () => sectionObserver.disconnect();
+  }, [visibleSections]);
 
   // Fetch visible sections
   useEffect(() => {

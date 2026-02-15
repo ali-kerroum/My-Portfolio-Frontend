@@ -53,8 +53,9 @@ export default function AdminDashboard() {
   const [visitors, setVisitors] = useState({
     total: 0, today: 0, yesterday: 0, this_week: 0, this_month: 0,
     unique_visitors: 0, growth_percent: 0, daily: [], monthly: [],
-    top_pages: [], top_referrers: [], browsers: [],
+    top_pages: [], day_of_week: [], browsers: [],
     devices: { mobile: 0, desktop: 0 }, peak_hours: [], recent_views: [],
+    new_visitors_today: 0, returning_visitors_today: 0,
   });
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [recentMessages, setRecentMessages] = useState([]);
@@ -168,16 +169,20 @@ export default function AdminDashboard() {
         </div>
 
         <div className="dash2-glass">
-          <div className="dash2-glass__head"><h3>Top Pages</h3></div>
+          <div className="dash2-glass__head"><h3>Top Sections</h3></div>
           <div className="dash2-ranking">
             {(visitors.top_pages || []).length === 0 && <p className="dash2-empty">No data yet</p>}
-            {(visitors.top_pages || []).map((p, i) => (
-              <div key={p.page} className="dash2-ranking__row">
-                <span className="dash2-ranking__num" style={{ '--rc': ['#639bff','#bc8cff','#ffb74d','#4caf50','#64748b'][i] }}>{i + 1}</span>
-                <span className="dash2-ranking__text">{p.page || '/'}</span>
-                <span className="dash2-ranking__val">{p.count}</span>
-              </div>
-            ))}
+            {(visitors.top_pages || []).map((p, i) => {
+              const pageLabels = { '/': 'Home (initial load)', '/#hero': 'Hero', '/#about': 'About', '/#experience': 'Experience', '/#services': 'Services', '/#projects': 'Projects', '/#contact': 'Contact' };
+              const label = pageLabels[p.page] || p.page || 'Home';
+              return (
+                <div key={p.page} className="dash2-ranking__row">
+                  <span className="dash2-ranking__num" style={{ '--rc': ['#639bff','#bc8cff','#ffb74d','#4caf50','#64748b'][i] }}>{i + 1}</span>
+                  <span className="dash2-ranking__text">{label}</span>
+                  <span className="dash2-ranking__val">{p.count}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -253,30 +258,49 @@ export default function AdminDashboard() {
       {/* ── Bento: Referrers + Activity Feed ────── */}
       <section className="dash2-bento">
         <div className="dash2-glass">
-          <div className="dash2-glass__head"><h3>Top Referrers</h3></div>
-          <div className="dash2-ranking">
-            {(visitors.top_referrers || []).length === 0 && <p className="dash2-empty">No referrers yet</p>}
-            {(visitors.top_referrers || []).map((r, i) => (
-              <div key={r.referrer} className="dash2-ranking__row">
-                <span className="dash2-ranking__num" style={{ '--rc': ['#639bff','#bc8cff','#ffb74d','#4caf50','#64748b'][i] }}>{i + 1}</span>
-                <span className="dash2-ranking__text dash2-ranking__text--trunc">{r.domain || r.referrer}</span>
-                <span className="dash2-ranking__val">{r.count}</span>
-              </div>
-            ))}
+          <div className="dash2-glass__head"><h3>Visits by Day</h3></div>
+          <div className="dash2-dow">
+            {(() => {
+              const dowData = visitors.day_of_week || [];
+              const maxDow = Math.max(...dowData.map(d => d.count), 1);
+              return dowData.map((d) => (
+                <div key={d.day} className="dash2-dow__col" title={`${d.day}: ${d.count} visits`}>
+                  <span className="dash2-dow__tip">{d.count}</span>
+                  <div className="dash2-dow__bar" style={{ '--h': `${Math.max((d.count / maxDow) * 100, 4)}%` }} />
+                  <span className="dash2-dow__lbl">{d.day}</span>
+                </div>
+              ));
+            })()}
           </div>
+          {visitors.new_visitors_today + visitors.returning_visitors_today > 0 && (
+            <div className="dash2-newret">
+              <div className="dash2-newret__item">
+                <span className="dash2-newret__dot" style={{ background: '#4caf50' }} />
+                <span>New today: <strong>{visitors.new_visitors_today}</strong></span>
+              </div>
+              <div className="dash2-newret__item">
+                <span className="dash2-newret__dot" style={{ background: '#639bff' }} />
+                <span>Returning: <strong>{visitors.returning_visitors_today}</strong></span>
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="dash2-glass dash2-glass--chart">
           <div className="dash2-glass__head"><h3>Recent Activity</h3></div>
           <div className="dash2-activity">
             {(visitors.recent_views || []).length === 0 && <p className="dash2-empty">No visits yet</p>}
-            {(visitors.recent_views || []).map((v, i) => (
-              <div key={i} className="dash2-activity__row">
-                <span className="dash2-activity__dot" />
-                <span className="dash2-activity__page">{v.page || '/'}</span>
-                <span className="dash2-activity__time">{timeAgo(v.created_at)}</span>
-              </div>
-            ))}
+            {(visitors.recent_views || []).map((v, i) => {
+              const pageLabels = { '/': 'Home', '/#hero': 'Hero', '/#about': 'About', '/#experience': 'Experience', '/#services': 'Services', '/#projects': 'Projects', '/#contact': 'Contact' };
+              const label = pageLabels[v.page] || v.page || 'Home';
+              return (
+                <div key={i} className="dash2-activity__row">
+                  <span className="dash2-activity__dot" />
+                  <span className="dash2-activity__page">{label}</span>
+                  <span className="dash2-activity__time">{timeAgo(v.created_at)}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
