@@ -24,6 +24,7 @@ const fields = [
       { value: 'api', label: 'API / Backend' },
       { value: 'ui', label: 'UI / UX Design' },
       { value: 'automation', label: 'Automation / Scripting' },
+      { value: 'design', label: 'Design' },
       { value: 'other', label: 'Other' },
     ],
     defaultValue: 'web',

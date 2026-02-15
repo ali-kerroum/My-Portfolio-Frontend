@@ -45,6 +45,7 @@ export default function Projects() {
     api: 'API / Backend',
     ui: 'UI / UX Design',
     automation: 'Automation / Scripting',
+    design: 'Design',
     other: 'Other',
   };
 
