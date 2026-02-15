@@ -1480,14 +1480,62 @@ svg {
   background: linear-gradient(180deg, rgba(11, 16, 32, 0) 0%, rgba(15, 23, 42, 0.4) 100%);
 }
 
+/* Projects Toolbar */
+.projects-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 2.5rem 0 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(94, 160, 255, 0.1);
+}
+
+/* Projects Layout Toggle */
+.projects-layout-toggle {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.3rem;
+  background: rgba(15, 25, 42, 0.6);
+  border: 1px solid rgba(94, 160, 255, 0.12);
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.projects-layout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.projects-layout-btn:hover {
+  color: var(--text);
+  background: rgba(94, 160, 255, 0.1);
+}
+
+.projects-layout-btn--active {
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), #7c6cff);
+  box-shadow: 0 2px 8px rgba(94, 160, 255, 0.3);
+}
+
 /* Projects Filter */
 .projects-filter {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin: 2.5rem 0 2rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid rgba(94, 160, 255, 0.1);
+  margin: 0;
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
 .projects-filter__btn {
@@ -1565,6 +1613,41 @@ svg {
 .projects-showcase {
   display: grid;
   gap: 2rem;
+}
+
+/* Grid Layout */
+.projects-showcase--grid {
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
+
+.projects-showcase--grid .project-item {
+  grid-template-columns: 1fr;
+}
+
+.projects-showcase--grid .project-item__image-wrapper {
+  min-height: 220px;
+  max-height: 220px;
+}
+
+.projects-showcase--grid .project-item__body {
+  padding: 1.5rem;
+}
+
+.projects-showcase--grid .project-item__title {
+  font-size: 1.2rem;
+}
+
+.projects-showcase--grid .project-item__description {
+  font-size: 0.9rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.projects-showcase--grid .project-item__index {
+  font-size: 1.4rem;
 }
 
 .project-item {
@@ -3046,6 +3129,19 @@ svg {
 
   .projects-filter {
     gap: 0.5rem;
+  }
+
+  .projects-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .projects-layout-toggle {
+    align-self: flex-end;
+  }
+
+  .projects-showcase--grid {
+    grid-template-columns: 1fr;
   }
 
   .projects-filter__btn {
@@ -5120,6 +5216,21 @@ body:has(.app-shell.theme-light) {
 }
 .theme-light .projects-filter__btn--active,
 .theme-light .projects-filter__btn:hover {
+  background: var(--primary);
+  color: #fff;
+}
+.theme-light .projects-layout-toggle {
+  background: rgba(237, 232, 225, 0.7);
+  border-color: var(--border);
+}
+.theme-light .projects-layout-btn {
+  color: var(--text-muted);
+}
+.theme-light .projects-layout-btn:hover {
+  background: rgba(59, 125, 216, 0.1);
+  color: var(--text);
+}
+.theme-light .projects-layout-btn--active {
   background: var(--primary);
   color: #fff;
 }

@@ -6,6 +6,7 @@ export default function Projects() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [selectedProject, setSelectedProject] = useState(null);
   const [projects, setProjects] = useState(localProjects);
+  const [layout, setLayout] = useState('list');
 
   // Try fetching from API, fallback to local data
   useEffect(() => {
@@ -83,25 +84,50 @@ export default function Projects() {
           </p>
         </div>
 
-        <div className="projects-filter">
-          {categories.map((category) => (
+        <div className="projects-toolbar">
+          <div className="projects-filter">
+            {categories.map((category) => (
+              <button
+                key={category}
+                type="button"
+                className={`projects-filter__btn ${activeCategory === category ? 'projects-filter__btn--active' : ''}`}
+                onClick={() => setActiveCategory(category)}
+              >
+                <span className="projects-filter__label">{categoryLabels[category] || category.toUpperCase()}</span>
+                <span className="projects-filter__count">
+                  {category === 'all' 
+                    ? projects.length 
+                    : projects.filter(p => p.category === category).length}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <div className="projects-layout-toggle">
             <button
-              key={category}
               type="button"
-              className={`projects-filter__btn ${activeCategory === category ? 'projects-filter__btn--active' : ''}`}
-              onClick={() => setActiveCategory(category)}
+              className={`projects-layout-btn ${layout === 'list' ? 'projects-layout-btn--active' : ''}`}
+              onClick={() => setLayout('list')}
+              title="List view"
             >
-              <span className="projects-filter__label">{categoryLabels[category] || category.toUpperCase()}</span>
-              <span className="projects-filter__count">
-                {category === 'all' 
-                  ? projects.length 
-                  : projects.filter(p => p.category === category).length}
-              </span>
+              <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+                <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"/>
+              </svg>
             </button>
-          ))}
+            <button
+              type="button"
+              className={`projects-layout-btn ${layout === 'grid' ? 'projects-layout-btn--active' : ''}`}
+              onClick={() => setLayout('grid')}
+              title="Grid view"
+            >
+              <svg viewBox="0 0 20 20" fill="currentColor" width="18" height="18">
+                <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zm0 8a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zm6-6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zm0 8a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+              </svg>
+            </button>
+          </div>
         </div>
 
-        <div className="projects-showcase">
+        <div className={`projects-showcase ${layout === 'grid' ? 'projects-showcase--grid' : ''}`}>
           {filteredProjects.map((project, index) => (
             <article key={project.id} className="project-item">
               <div className="project-item__visual">
