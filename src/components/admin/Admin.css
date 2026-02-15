@@ -2255,6 +2255,107 @@
   letter-spacing: 0.04em;
 }
 
+/* ── Weekly Comparison ─────────────────── */
+.dash2-week-compare {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.dash2-week-compare__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  border-radius: 10px;
+  background: var(--a-surface);
+  border: 1px solid var(--a-border);
+}
+.dash2-week-compare__metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+.dash2-week-compare__label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--a-text);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.dash2-week-compare__vals {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+.dash2-week-compare__period {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.dash2-week-compare__sub {
+  font-size: 0.5625rem;
+  color: var(--a-text-tertiary);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.dash2-week-compare__num {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--a-text);
+}
+.dash2-week-compare__num--muted {
+  color: var(--a-text-tertiary);
+}
+.dash2-week-compare__vs {
+  font-size: 0.625rem;
+  color: var(--a-text-tertiary);
+  font-weight: 600;
+}
+
+/* ── Engagement Funnel ─────────────────── */
+.dash2-funnel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.dash2-funnel__row {
+  display: grid;
+  grid-template-columns: 80px 1fr 40px 36px;
+  align-items: center;
+  gap: 0.5rem;
+}
+.dash2-funnel__label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--a-text);
+  white-space: nowrap;
+}
+.dash2-funnel__track {
+  height: 20px;
+  background: var(--a-surface);
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--a-border);
+}
+.dash2-funnel__fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-width: 4px;
+}
+.dash2-funnel__val {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  color: var(--a-text);
+  text-align: right;
+}
+.dash2-funnel__count {
+  font-size: 0.5625rem;
+  font-weight: 600;
+  color: var(--a-text-tertiary);
+  text-align: right;
+}
+
 /* ── Messages ──────────────────────────── */
 .dash2-badge {
   display: inline-flex;

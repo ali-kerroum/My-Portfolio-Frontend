@@ -56,7 +56,11 @@ export default function AdminDashboard() {
     top_pages: [], browsers: [],
     devices: { mobile: 0, desktop: 0 }, peak_hours: [], recent_views: [],
     session_insights: { avg_duration: 0, avg_pages: 0, bounce_rate: 0, total_sessions: 0, longest_session: 0 },
+    os_breakdown: [], engagement_funnel: [],
+    weekly_comparison: { this_week_views: 0, last_week_views: 0, views_change: 0, this_week_visitors: 0, last_week_visitors: 0, visitors_change: 0 },
+    monthly_trend: [],
   });
+
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [recentMessages, setRecentMessages] = useState([]);
   const [chartMode, setChartMode] = useState('week');
@@ -64,11 +68,12 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     Promise.all([getProjects(), getExperiences(), getServices(), getSkills()]).then(
-      ([projects, experiences, services, skills]) => {
+      ([projectsRes, experiences, services, skillsRes]) => {
         setStats({
-          projects: projects.data.length, experiences: experiences.data.length,
-          services: services.data.length, skills: skills.data.length,
+          projects: projectsRes.data.length, experiences: experiences.data.length,
+          services: services.data.length, skills: skillsRes.data.length,
         });
+
       }
     );
     getPageViewStats().then((res) => setVisitors(res.data)).catch(() => {});
@@ -90,6 +95,8 @@ export default function AdminDashboard() {
   const maxHour = Math.max(...(visitors.peak_hours || []).map((h) => h.count), 1);
   const totalBrowsers = (visitors.browsers || []).reduce((s, b) => s + b.count, 0);
   const browserColors = { Chrome: '#4285f4', Firefox: '#ff7139', Safari: '#006cff', Edge: '#0078d4', Opera: '#ff1b2d', Other: '#64748b' };
+  const osColors = { Windows: '#0078d4', macOS: '#555555', iOS: '#007aff', Android: '#3ddc84', Linux: '#ffb74d', ChromeOS: '#4285f4', Other: '#64748b' };
+  const totalOs = (visitors.os_breakdown || []).reduce((s, o) => s + o.count, 0);
 
   const deviceSegments = useMemo(() => [
     { label: 'Desktop', value: visitors.devices?.desktop || 0, color: '#639bff' },
@@ -255,7 +262,124 @@ export default function AdminDashboard() {
         ))}
       </section>
 
-      {/* ── Bento: Referrers + Activity Feed ────── */}
+      {/* ── Weekly Comparison + Monthly Trend ────── */}
+      <section className="dash2-bento">
+        <div className="dash2-glass">
+          <div className="dash2-glass__head"><h3>Weekly Comparison</h3></div>
+          {(() => {
+            const wc = visitors.weekly_comparison || {};
+            const arrow = (v) => v > 0 ? '↑' : v < 0 ? '↓' : '';
+            const cls = (v) => v > 0 ? 'dash2-trend--up' : v < 0 ? 'dash2-trend--down' : '';
+            return (
+              <div className="dash2-week-compare">
+                <div className="dash2-week-compare__row">
+                  <div className="dash2-week-compare__metric">
+                    <span className="dash2-week-compare__label">Views</span>
+                    <div className="dash2-week-compare__vals">
+                      <div className="dash2-week-compare__period">
+                        <span className="dash2-week-compare__sub">This week</span>
+                        <span className="dash2-week-compare__num">{(wc.this_week_views || 0).toLocaleString()}</span>
+                      </div>
+                      <span className="dash2-week-compare__vs">vs</span>
+                      <div className="dash2-week-compare__period">
+                        <span className="dash2-week-compare__sub">Last week</span>
+                        <span className="dash2-week-compare__num dash2-week-compare__num--muted">{(wc.last_week_views || 0).toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <span className={`dash2-trend ${cls(wc.views_change)}`}>{arrow(wc.views_change)} {Math.abs(wc.views_change || 0)}%</span>
+                </div>
+                <div className="dash2-week-compare__row">
+                  <div className="dash2-week-compare__metric">
+                    <span className="dash2-week-compare__label">Unique Visitors</span>
+                    <div className="dash2-week-compare__vals">
+                      <div className="dash2-week-compare__period">
+                        <span className="dash2-week-compare__sub">This week</span>
+                        <span className="dash2-week-compare__num">{(wc.this_week_visitors || 0).toLocaleString()}</span>
+                      </div>
+                      <span className="dash2-week-compare__vs">vs</span>
+                      <div className="dash2-week-compare__period">
+                        <span className="dash2-week-compare__sub">Last week</span>
+                        <span className="dash2-week-compare__num dash2-week-compare__num--muted">{(wc.last_week_visitors || 0).toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <span className={`dash2-trend ${cls(wc.visitors_change)}`}>{arrow(wc.visitors_change)} {Math.abs(wc.visitors_change || 0)}%</span>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+
+        <div className="dash2-glass dash2-glass--chart">
+          <div className="dash2-glass__head"><h3>Monthly Trend</h3></div>
+          {(() => {
+            const mt = visitors.monthly_trend || [];
+            const maxMt = Math.max(...mt.map(m => m.count), 1);
+            return mt.length > 0 ? (
+              <div className="dash2-bars">
+                {mt.map((m) => (
+                  <div key={m.month} className="dash2-bars__col" title={`${m.month}: ${m.count}`}>
+                    <span className="dash2-bars__tip">{m.count}</span>
+                    <div className="dash2-bars__bar" style={{ '--h': `${Math.max((m.count / maxMt) * 100, 3)}%` }} />
+                    <span className="dash2-bars__lbl">{m.short}</span>
+                  </div>
+                ))}
+              </div>
+            ) : <p className="dash2-empty">No data yet</p>;
+          })()}
+        </div>
+      </section>
+
+      {/* ── OS Breakdown + Engagement Funnel ────── */}
+      <section className="dash2-bento">
+        <div className="dash2-glass">
+          <div className="dash2-glass__head"><h3>Operating Systems <span className="dash2-alltime">All Time</span></h3></div>
+          <div className="dash2-browser-list">
+            {(visitors.os_breakdown || []).length === 0 && <p className="dash2-empty">No data yet</p>}
+            {(visitors.os_breakdown || []).map((o) => {
+              const pct = totalOs > 0 ? Math.round((o.count / totalOs) * 100) : 0;
+              const c = osColors[o.name] || '#64748b';
+              return (
+                <div key={o.name} className="dash2-brow">
+                  <div className="dash2-brow__head">
+                    <span className="dash2-brow__dot" style={{ background: c }} />
+                    <span className="dash2-brow__name">{o.name}</span>
+                    <span className="dash2-brow__pct">{pct}%</span>
+                  </div>
+                  <div className="dash2-brow__track">
+                    <div className="dash2-brow__fill" style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${c}, ${c}88)` }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="dash2-glass dash2-glass--chart">
+          <div className="dash2-glass__head"><h3>Engagement Funnel</h3></div>
+          <div className="dash2-funnel">
+            {(() => {
+              const funnelLabels = { '/': 'Landing', '/#hero': 'Hero', '/#about': 'About', '/#experience': 'Experience', '/#services': 'Services', '/#projects': 'Projects', '/#contact': 'Contact' };
+              const funnelColors = ['#639bff', '#4caf50', '#bc8cff', '#ffb74d', '#ff6384', '#4285f4', '#ff9800'];
+              const fd = visitors.engagement_funnel || [];
+              const maxVisitors = Math.max(...fd.map(f => f.visitors), 1);
+              return fd.length === 0 ? <p className="dash2-empty">No data yet</p> : fd.map((f, i) => (
+                <div key={f.section} className="dash2-funnel__row">
+                  <span className="dash2-funnel__label">{funnelLabels[f.section] || f.section}</span>
+                  <div className="dash2-funnel__track">
+                    <div className="dash2-funnel__fill" style={{ width: `${Math.max((f.visitors / maxVisitors) * 100, 3)}%`, background: funnelColors[i % funnelColors.length] }} />
+                  </div>
+                  <span className="dash2-funnel__val">{f.percent}%</span>
+                  <span className="dash2-funnel__count">{f.visitors}</span>
+                </div>
+              ));
+            })()}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Session Insights + Activity Feed ────── */}
       <section className="dash2-bento">
         <div className="dash2-glass">
           <div className="dash2-glass__head"><h3>Session Insights</h3></div>
