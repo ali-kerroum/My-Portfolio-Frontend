@@ -19,9 +19,9 @@ export default function Projects() {
   }, []);
 
   const categories = useMemo(() => {
-    const unique = Array.from(new Set(projects.map((project) => project.category)));
+    const unique = Array.from(new Set(projects.map((project) => project.category).filter(Boolean)));
     return ['all', ...unique];
-  }, []);
+  }, [projects]);
 
   const filteredProjects =
     activeCategory === 'all'
@@ -32,6 +32,20 @@ export default function Projects() {
     all: 'All Projects',
     web: 'Web Development',
     data: 'Data Science',
+    'data-analysis': 'Data Analysis',
+    'deep-learning': 'Deep Learning',
+    mobile: 'Mobile Development',
+    ai: 'AI / Machine Learning',
+    devops: 'DevOps / Cloud',
+    cybersecurity: 'Cybersecurity',
+    blockchain: 'Blockchain',
+    iot: 'IoT',
+    game: 'Game Development',
+    desktop: 'Desktop Application',
+    api: 'API / Backend',
+    ui: 'UI / UX Design',
+    automation: 'Automation / Scripting',
+    other: 'Other',
   };
 
   // Lock body scroll when modal is open
