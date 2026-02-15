@@ -8,7 +8,7 @@ export default function Projects() {
   const [projects, setProjects] = useState(localProjects);
   const [layout, setLayout] = useState('list');
   const [currentPage, setCurrentPage] = useState(1);
-  const PROJECTS_PER_PAGE = 5;
+  const PROJECTS_PER_PAGE = 3;
 
   // Try fetching from API, fallback to local data
   useEffect(() => {
