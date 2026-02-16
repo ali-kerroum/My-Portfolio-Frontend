@@ -44,14 +44,20 @@ function Portfolio() {
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
 
+  // Don't track page views when logged in as admin
+  const isAdmin = !!localStorage.getItem('admin_token');
+
   // Track page view on load and ensure scroll starts at top
   useEffect(() => {
     window.scrollTo(0, 0);
-    trackPageView(window.location.pathname).catch(() => {});
+    if (!isAdmin) {
+      trackPageView(window.location.pathname).catch(() => {});
+    }
   }, []);
 
   // Track section views as user scrolls
   useEffect(() => {
+    if (isAdmin) return;
     const tracked = new Set();
     const sectionObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
