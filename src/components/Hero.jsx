@@ -93,31 +93,17 @@ const scrollToSection = (id) => {
 };
 
 export default function Hero() {
-  const [hero, setHero] = useState(null);
+  const [hero, setHero] = useState(defaultData);
 
   useEffect(() => {
     getHeroContent()
       .then((res) => {
         if (res.data && typeof res.data === 'object' && Object.keys(res.data).length > 0) {
           setHero({ ...defaultData, ...res.data });
-        } else {
-          setHero(defaultData);
         }
       })
-      .catch(() => setHero(defaultData));
+      .catch(() => {});
   }, []);
-
-  if (!hero) {
-    return (
-      <section id="hero" className="hero">
-        <div className="hero__background" aria-hidden="true">
-          <span className="hero__glow hero__glow--one" />
-          <span className="hero__glow hero__glow--two" />
-          <span className="hero__grid" />
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section id="hero" className="hero">
