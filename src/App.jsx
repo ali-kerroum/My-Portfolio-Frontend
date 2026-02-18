@@ -86,34 +86,25 @@ function Portfolio() {
   }, []);
 
   useEffect(() => {
-    // Scroll animations
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px',
-    };
-
-    const animateOnScroll = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-in');
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(animateOnScroll, observerOptions);
-
-    // Observe all sections and major elements (excluding hero which is already visible)
-    const elementsToAnimate = document.querySelectorAll(
-      '.service-item, .project-item, .experience-card, .about-main-left > .panel, .about-main-right, .contact-wrapper > *, .footer-main > *, .gallery-item'
+    // Section-level scroll animations
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
     );
 
-    elementsToAnimate.forEach((el) => {
-      el.classList.add('animate-on-scroll');
+    // Observe all sections except hero (hero is always visible)
+    document.querySelectorAll('section[id]:not(#hero), .site-footer').forEach((el) => {
       observer.observe(el);
     });
 
     return () => observer.disconnect();
-  }, [galleryProjectId]);
+  }, [galleryProjectId, visibleSections]);
 
   return (
     <div className="app-shell">

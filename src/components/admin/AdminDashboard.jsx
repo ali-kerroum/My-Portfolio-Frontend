@@ -4,7 +4,7 @@ import { getProjects, getExperiences, getServices, getSkills, getPageViewStats, 
 import { IconRocket, IconBriefcase, IconSettings, IconTarget } from './Icons';
 
 /* ── tiny SVG sparkline (area) ────────────────────────── */
-function Sparkline({ data, width = 200, height = 48, color = '#639bff' }) {
+function Sparkline({ data, width = 200, height = 48, color = '#38bdf8' }) {
   if (!data || data.length < 2) return null;
   const max = Math.max(...data, 1);
   const step = width / (data.length - 1);
@@ -83,9 +83,9 @@ export default function AdminDashboard() {
   }, []);
 
   const contentCards = [
-    { label: 'Projects', count: stats.projects, icon: <IconRocket />, to: '/admin/projects', color: '#639bff', gradient: 'linear-gradient(135deg, #639bff 0%, #4285f4 100%)' },
+    { label: 'Projects', count: stats.projects, icon: <IconRocket />, to: '/admin/projects', color: '#38bdf8', gradient: 'linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%)' },
     { label: 'Experiences', count: stats.experiences, icon: <IconBriefcase />, to: '/admin/experiences', color: '#4caf50', gradient: 'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)' },
-    { label: 'Services', count: stats.services, icon: <IconSettings />, to: '/admin/services', color: '#bc8cff', gradient: 'linear-gradient(135deg, #bc8cff 0%, #9c6fff 100%)' },
+    { label: 'Services', count: stats.services, icon: <IconSettings />, to: '/admin/services', color: '#2dd4bf', gradient: 'linear-gradient(135deg, #2dd4bf 0%, #9c6fff 100%)' },
     { label: 'Skills', count: stats.skills, icon: <IconTarget />, to: '/admin/skills', color: '#ffb74d', gradient: 'linear-gradient(135deg, #ffb74d 0%, #ff9800 100%)' },
   ];
 
@@ -94,13 +94,13 @@ export default function AdminDashboard() {
   const totalDevices = (visitors.devices?.mobile || 0) + (visitors.devices?.desktop || 0);
   const maxHour = Math.max(...(visitors.peak_hours || []).map((h) => h.count), 1);
   const totalBrowsers = (visitors.browsers || []).reduce((s, b) => s + b.count, 0);
-  const browserColors = { Chrome: '#4285f4', Firefox: '#ff7139', Safari: '#006cff', Edge: '#0078d4', Opera: '#ff1b2d', Other: '#64748b' };
-  const osColors = { Windows: '#0078d4', macOS: '#555555', iOS: '#007aff', Android: '#3ddc84', Linux: '#ffb74d', ChromeOS: '#4285f4', Other: '#64748b' };
+  const browserColors = { Chrome: '#0ea5e9', Firefox: '#ff7139', Safari: '#006cff', Edge: '#0078d4', Opera: '#ff1b2d', Other: '#64748b' };
+  const osColors = { Windows: '#0078d4', macOS: '#555555', iOS: '#007aff', Android: '#3ddc84', Linux: '#ffb74d', ChromeOS: '#0ea5e9', Other: '#64748b' };
   const totalOs = (visitors.os_breakdown || []).reduce((s, o) => s + o.count, 0);
 
   const deviceSegments = useMemo(() => [
-    { label: 'Desktop', value: visitors.devices?.desktop || 0, color: '#639bff' },
-    { label: 'Mobile', value: visitors.devices?.mobile || 0, color: '#bc8cff' },
+    { label: 'Desktop', value: visitors.devices?.desktop || 0, color: '#38bdf8' },
+    { label: 'Mobile', value: visitors.devices?.mobile || 0, color: '#2dd4bf' },
   ], [visitors.devices]);
 
   const timeAgo = (dateStr) => {
@@ -130,9 +130,9 @@ export default function AdminDashboard() {
       {/* ── KPI Row ────── */}
       <section className="dash2-kpis">
         {[
-          { val: visitors.total, label: 'Total Views', color: '#639bff', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>, sparkData: (visitors.daily || []).map(d => d.count) },
+          { val: visitors.total, label: 'Total Views', color: '#38bdf8', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>, sparkData: (visitors.daily || []).map(d => d.count) },
           { val: visitors.today, label: 'Today', color: '#4caf50', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, trend: visitors.growth_percent },
-          { val: visitors.this_month, label: 'This Month', color: '#bc8cff', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> },
+          { val: visitors.this_month, label: 'This Month', color: '#2dd4bf', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> },
           { val: visitors.unique_visitors, label: 'Unique Visitors', color: '#ffb74d', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg> },
         ].map((kpi, idx) => (
           <div key={kpi.label} className="dash2-kpi" style={{ '--kc': kpi.color, '--delay': `${idx * 60}ms` }}>
@@ -184,7 +184,7 @@ export default function AdminDashboard() {
               const label = pageLabels[p.page] || p.page || 'Home';
               return (
                 <div key={p.page} className="dash2-ranking__row">
-                  <span className="dash2-ranking__num" style={{ '--rc': ['#639bff','#bc8cff','#ffb74d','#4caf50','#64748b'][i] }}>{i + 1}</span>
+                  <span className="dash2-ranking__num" style={{ '--rc': ['#38bdf8','#2dd4bf','#ffb74d','#4caf50','#64748b'][i] }}>{i + 1}</span>
                   <span className="dash2-ranking__text">{label}</span>
                   <span className="dash2-ranking__val">{p.count}</span>
                 </div>
@@ -361,7 +361,7 @@ export default function AdminDashboard() {
           <div className="dash2-funnel">
             {(() => {
               const funnelLabels = { '/': 'Landing', '/#hero': 'Hero', '/#about': 'About', '/#experience': 'Experience', '/#services': 'Services', '/#projects': 'Projects', '/#contact': 'Contact' };
-              const funnelColors = ['#639bff', '#4caf50', '#bc8cff', '#ffb74d', '#ff6384', '#4285f4', '#ff9800'];
+              const funnelColors = ['#38bdf8', '#4caf50', '#2dd4bf', '#ffb74d', '#ff6384', '#0ea5e9', '#ff9800'];
               const fd = visitors.engagement_funnel || [];
               const maxVisitors = Math.max(...fd.map(f => f.visitors), 1);
               return fd.length === 0 ? <p className="dash2-empty">No data yet</p> : fd.map((f, i) => (
@@ -395,7 +395,7 @@ export default function AdminDashboard() {
             return (
               <div className="dash2-sessions">
                 <div className="dash2-sessions__card">
-                  <span className="dash2-sessions__icon" style={{ color: '#639bff' }}>
+                  <span className="dash2-sessions__icon" style={{ color: '#38bdf8' }}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                   </span>
                   <span className="dash2-sessions__val">{fmtDuration(si.avg_duration)}</span>
@@ -416,7 +416,7 @@ export default function AdminDashboard() {
                   <span className="dash2-sessions__lbl">Bounce Rate</span>
                 </div>
                 <div className="dash2-sessions__card">
-                  <span className="dash2-sessions__icon" style={{ color: '#bc8cff' }}>
+                  <span className="dash2-sessions__icon" style={{ color: '#2dd4bf' }}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
                   </span>
                   <span className="dash2-sessions__val">{si.total_sessions || 0}</span>

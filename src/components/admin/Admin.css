@@ -18,7 +18,7 @@
   --a-text-secondary: #94a3b8;
   --a-text-tertiary: #64748b;
   --a-text-inverse: #0f172a;
-  --a-primary: #639bff;
+  --a-primary: #38bdf8;
   --a-primary-hover: #80b0ff;
   --a-primary-muted: rgba(99, 155, 255, 0.12);
   --a-primary-subtle: rgba(99, 155, 255, 0.06);
@@ -2017,8 +2017,8 @@
   width: 22px;
   height: 22px;
   border-radius: 7px;
-  background: color-mix(in srgb, var(--rc, #639bff) 12%, transparent);
-  color: var(--rc, #639bff);
+  background: color-mix(in srgb, var(--rc, #38bdf8) 12%, transparent);
+  color: var(--rc, #38bdf8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2294,7 +2294,7 @@
   padding: 0.15rem 0.45rem;
   border-radius: 6px;
   background: rgba(99, 155, 255, 0.1);
-  color: #639bff;
+  color: #38bdf8;
   margin-left: 0.5rem;
   vertical-align: middle;
 }
